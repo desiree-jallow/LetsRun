@@ -21,17 +21,14 @@ class MapViewController: UIViewController {
         checkLocationAuthStatus()
         setStartPosition()
     
-
         // Do any additional setup after loading the view.
     }
     
     @IBAction func endButtonPressed(_ sender: RoundButton) {
         LocationService.instance.locationManager.stopUpdatingLocation()
         
-        setStartPosition()
-        setEndPosition()
         
-        if let start = LocationService.instance.locationManager.location?.coordinate, let end = LocationService.instance.currentLocation {
+        if let start = LocationService.instance.locationsArray.first, let end = LocationService.instance.locationsArray.last {
             
             showRoute(startPosition: start, endPosition: end)
         }
@@ -62,34 +59,25 @@ extension MapViewController {
         if let coordinate = LocationService.instance.locationManager.location?.coordinate {
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
-            annotation.title = "Start Position"
+            annotation.title = "Start"
             mapView.addAnnotation(annotation)
             
         }
     }
     
-    func setEndPosition() {
-        if let coordinate = LocationService.instance.currentLocation {
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = coordinate
-            annotation.title = "End Position"
-            mapView.addAnnotation(annotation)
-        }
-    }
-}
-
-
-extension MapViewController: MKMapViewDelegate {
     func checkLocationAuthStatus() {
         if LocationService.instance.locationManager.authorizationStatus == .authorizedWhenInUse {
             self.mapView.showsUserLocation = true
             self.mapView.userTrackingMode = .follow
-            LocationService.instance.customUserLocDelegate = self
         } else {
             LocationService.instance.locationManager.requestWhenInUseAuthorization()
         }
     }
     
+}
+
+
+extension MapViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let directionsRenderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
@@ -99,15 +87,6 @@ extension MapViewController: MKMapViewDelegate {
         
         return directionsRenderer
     }
-
-    
 }
 
-extension MapViewController: CustomUserLocDelegate {
-    func userLocationUpdated(location: CLLocation) {
-        
-        
-    }
-    
-}
 

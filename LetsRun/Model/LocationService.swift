@@ -9,18 +9,12 @@ import Foundation
 import CoreLocation
 import MapKit
 
-protocol CustomUserLocDelegate {
-    func userLocationUpdated(location: CLLocation)
-    
-}
 
 class LocationService: NSObject, CLLocationManagerDelegate {
     static let instance = LocationService()
     
-    var customUserLocDelegate: CustomUserLocDelegate?
-    
     var locationManager = CLLocationManager()
-    var currentLocation: CLLocationCoordinate2D?
+    var locationsArray: [CLLocationCoordinate2D] = []
     
     override init() {
         super.init()
@@ -31,11 +25,10 @@ class LocationService: NSObject, CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
-        self.currentLocation = manager.location?.coordinate
-        
-        if customUserLocDelegate != nil {
-            customUserLocDelegate?.userLocationUpdated(location: locations.first!)
+
+        if let location = locations.last?.coordinate {
+            locationsArray.append(location)
+            
         }
     }
     
@@ -43,6 +36,4 @@ class LocationService: NSObject, CLLocationManagerDelegate {
         print(error.localizedDescription)
     }
     
-    
-
 }
