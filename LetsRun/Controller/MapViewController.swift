@@ -10,8 +10,6 @@ import MapKit
 
 class MapViewController: UIViewController {
    
-    
-
     @IBOutlet weak var mapView: MKMapView!
     
     override func viewDidLoad() {
@@ -32,9 +30,7 @@ class MapViewController: UIViewController {
             
             showRoute(startPosition: start, endPosition: end)
         }
-        
     }
-    
 }
 
 extension MapViewController {

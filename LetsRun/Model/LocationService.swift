@@ -7,8 +7,6 @@
 
 import Foundation
 import CoreLocation
-import MapKit
-
 
 class LocationService: NSObject, CLLocationManagerDelegate {
     static let instance = LocationService()
