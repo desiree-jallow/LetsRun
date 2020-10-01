@@ -69,32 +69,65 @@
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                             </mapView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dMY-EY-hKc" customClass="RoundButton" customModule="LetsRun" customModuleProvider="target">
-                                <rect key="frame" x="50" y="752" width="314" height="30"/>
+                                <rect key="frame" x="50" y="812" width="314" height="30"/>
                                 <color key="backgroundColor" red="0.74691295619999998" green="0.48114252089999998" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="End Run">
+                                <state key="normal" title="Stop Run">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
                                     <action selector="endButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qt4-1d-ppF"/>
                                 </connections>
                             </button>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="ksO-eD-Mbu">
+                                <rect key="frame" x="121.5" y="128" width="171" height="32"/>
+                                <segments>
+                                    <segment title="Miles"/>
+                                    <segment title="Kilometers"/>
+                                </segments>
+                                <color key="selectedSegmentTintColor" red="0.75483030080000002" green="0.4850701094" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <action selector="segmentChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="wcE-nq-n3b"/>
+                                </connections>
+                            </segmentedControl>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You ran 5 miles" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GYB-ey-W9W">
+                                <rect key="frame" x="20" y="199" width="374" height="50"/>
+                                <color key="backgroundColor" red="0.080592773849999993" green="0.18949791790000001" blue="0.3140477538" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="ccW-9l-gUn"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="dMY-EY-hKc" secondAttribute="trailing" constant="50" id="3Iw-xi-iLE"/>
                             <constraint firstAttribute="bottom" secondItem="GwP-mC-pK7" secondAttribute="bottom" id="8nk-pL-4G8"/>
+                            <constraint firstItem="ksO-eD-Mbu" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="40" id="BWS-kI-SX6"/>
                             <constraint firstItem="GwP-mC-pK7" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="Hl0-gp-j9u"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="dMY-EY-hKc" secondAttribute="bottom" constant="80" id="Ryx-G1-FqG"/>
+                            <constraint firstItem="GYB-ey-W9W" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="LaH-Vx-COQ"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="dMY-EY-hKc" secondAttribute="bottom" constant="20" id="Ryx-G1-FqG"/>
                             <constraint firstItem="dMY-EY-hKc" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="50" id="UCO-Yb-Z28"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="GYB-ey-W9W" secondAttribute="trailing" constant="20" id="b9I-mz-pXe"/>
+                            <constraint firstItem="GYB-ey-W9W" firstAttribute="top" secondItem="ksO-eD-Mbu" secondAttribute="bottom" constant="40" id="fmZ-gL-sJJ"/>
                             <constraint firstItem="GwP-mC-pK7" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="h7X-2v-NYX"/>
                             <constraint firstItem="GwP-mC-pK7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="pAf-eh-S0Z"/>
+                            <constraint firstItem="ksO-eD-Mbu" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="t1a-4F-nH3"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="LNY-SZ-Xi0"/>
+                    <navigationItem key="navigationItem" id="LNY-SZ-Xi0">
+                        <barButtonItem key="rightBarButtonItem" systemItem="action" id="QZQ-xg-1hQ">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="distanceLabel" destination="GYB-ey-W9W" id="I2w-lN-5jk"/>
+                        <outlet property="distanceSegment" destination="ksO-eD-Mbu" id="xLq-8a-d94"/>
                         <outlet property="mapView" destination="GwP-mC-pK7" id="4ZI-fh-0gb"/>
+                        <outlet property="stopButton" destination="dMY-EY-hKc" id="tkj-Ag-iD6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -109,6 +142,11 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="h88-dY-OYS">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="barTintColor" red="0.75483030080000002" green="0.4850701094" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" red="0.87059742210000002" green="0.86670535800000004" blue="0.86651629210000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>

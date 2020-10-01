@@ -12,23 +12,48 @@ class MapViewController: UIViewController {
    
     @IBOutlet weak var mapView: MKMapView!
     
+    @IBOutlet weak var distanceLabel: UILabel!
+    @IBOutlet weak var distanceSegment: UISegmentedControl!
+    @IBOutlet weak var stopButton: RoundButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         mapView.delegate = self
         checkLocationAuthStatus()
-        setStartPosition()
+        setPosition()
     
         // Do any additional setup after loading the view.
     }
     
-    @IBAction func endButtonPressed(_ sender: RoundButton) {
-        LocationService.instance.locationManager.stopUpdatingLocation()
+    @IBAction func segmentChanged(_ sender: UISegmentedControl) {
+        let miles = (LocationService.instance.distanceInMeters / 1609)
+        let kilo = LocationService.instance.distanceInKilo
         
+        let formattedMiles = String(format: "%.02f", miles)
+        let formattedKilo = String(format: "%.02f", kilo)
+        
+        
+        if distanceSegment.selectedSegmentIndex == 0 {
+            
+            distanceLabel.text = "Your ran \(formattedMiles) Miles"
+        } else {
+            distanceLabel.text = "You ran \(formattedKilo) Kilometers"
+        }
+    }
+    
+    @IBAction func endButtonPressed(_ sender: RoundButton) {
         
         if let start = LocationService.instance.locationsArray.first, let end = LocationService.instance.locationsArray.last {
-            
+    
+            setPosition()
             showRoute(startPosition: start, endPosition: end)
+            LocationService.instance.locationManager.stopUpdatingLocation()
+            stopButton.isEnabled = false
+            stopButton.setTitleColor(.gray, for: .normal)
+            distanceLabel.isHidden = false
+            mapView.showsUserLocation = false
+            
         }
     }
 }
@@ -51,11 +76,10 @@ extension MapViewController {
         }
     }
     
-    func setStartPosition() {
+    func setPosition() {
         if let coordinate = LocationService.instance.locationManager.location?.coordinate {
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
-            annotation.title = "Start"
             mapView.addAnnotation(annotation)
             
         }
@@ -77,11 +101,22 @@ extension MapViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let directionsRenderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
-        directionsRenderer.strokeColor = .systemBlue
+        directionsRenderer.strokeColor = #colorLiteral(red: 0.08059277385, green: 0.1894979179, blue: 0.3140477538, alpha: 1)
         directionsRenderer.lineWidth = 5
         directionsRenderer.alpha = 0.85
         
         return directionsRenderer
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pin")
+        
+        annotationView.animatesDrop = true
+        annotationView.pinTintColor = #colorLiteral(red: 0.08059277385, green: 0.1894979179, blue: 0.3140477538, alpha: 1)
+        
+        return annotationView
+        
+        
     }
 }
 

@@ -22,6 +22,11 @@ class StartViewController: UIViewController {
         navigationController?.navigationBar.isHidden = true
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.navigationBar.isHidden = false
+        
+    }
+    
 }
     
 
