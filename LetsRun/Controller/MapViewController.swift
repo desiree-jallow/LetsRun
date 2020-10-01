@@ -83,17 +83,13 @@ extension MapViewController: MKMapViewDelegate {
     func checkLocationAuthStatus() {
         if LocationService.instance.locationManager.authorizationStatus == .authorizedWhenInUse {
             self.mapView.showsUserLocation = true
+            self.mapView.userTrackingMode = .follow
             LocationService.instance.customUserLocDelegate = self
         } else {
             LocationService.instance.locationManager.requestWhenInUseAuthorization()
         }
     }
     
-    func centerMapOnUserLocation(coordinates: CLLocationCoordinate2D) {
-        let region = MKCoordinateRegion(center: coordinates, latitudinalMeters: 500, longitudinalMeters: 500)
-        self.mapView.setRegion(region, animated: true)
-        
-    }
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let directionsRenderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
@@ -109,7 +105,7 @@ extension MapViewController: MKMapViewDelegate {
 
 extension MapViewController: CustomUserLocDelegate {
     func userLocationUpdated(location: CLLocation) {
-        centerMapOnUserLocation(coordinates: location.coordinate)
+        
         
     }
     
