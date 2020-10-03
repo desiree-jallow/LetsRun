@@ -9,7 +9,7 @@ import UIKit
 import MapKit
 import MessageUI
 
-class MapViewController: UIViewController, MFMessageComposeViewControllerDelegate {
+class MapViewController: UIViewController {
     
     
    
@@ -45,62 +45,35 @@ class MapViewController: UIViewController, MFMessageComposeViewControllerDelegat
         }
     }
     
-    func setUpStopButton() {
-        LocationService.instance.locationManager.stopUpdatingLocation()
-        stopButton.isEnabled = false
-        stopButton.setTitleColor(.gray, for: .normal)
-        distanceLabel.isHidden = false
-        mapView.showsUserLocation = false
-    }
-    
-    func checkSegment() {
-        
-        let miles = (LocationService.instance.distanceInMeters / 1609)
-        let kilo = LocationService.instance.distanceInKilo
-        
-        let formattedMiles = String(format: "%.02f", miles)
-        let formattedKilo = String(format: "%.02f", kilo)
-        
-        if distanceSegment.selectedSegmentIndex == 1 {
-            
-            distanceLabel.text = "You ran \(formattedKilo) Kilometers"
-            
-        } else {
-            
-            distanceLabel.text = "You ran \(formattedMiles) Miles"
-        }
-    }
-    
-    func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
-        controller.dismiss(animated: true, completion: nil)
-    }
-    
     @IBAction func shareButtonTapped(_ sender: UIBarButtonItem) {
         
         if (MFMessageComposeViewController.canSendText()) {
             
-                let controller = MFMessageComposeViewController()
-                controller.messageComposeDelegate = self
+            let controller = MFMessageComposeViewController()
+            controller.messageComposeDelegate = self
             
+            let renderer = UIGraphicsImageRenderer(size: view.bounds.size)
+            
+            let image = renderer.image { ctx in
+                view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
+            }
+            
+            let imageData = (image.jpegData(compressionQuality: 1.0))!
+            
+            controller.addAttachmentData(imageData, typeIdentifier: "image/jpeg", filename: "myroute.jpeg")
             
                 self.present(controller, animated: true, completion: nil)
-                
             }
             else {
                 print("No good")
             }
-        
-       
-        
-       
-        
-
-        
-        
-         
     }
-    
-    
+}
+
+extension MapViewController: MFMessageComposeViewControllerDelegate {
+    func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+        controller.dismiss(animated: true, completion: nil)
+    }
 }
 
 extension MapViewController {
@@ -131,7 +104,6 @@ extension MapViewController {
     }
     
     func checkLocationAuthStatus() {
-         
             if LocationService.instance.locationManager.authorizationStatus == .authorizedWhenInUse {
                 self.mapView.showsUserLocation = true
                 self.mapView.userTrackingMode = .follow
@@ -140,7 +112,32 @@ extension MapViewController {
                 checkLocationAuthStatus()
             }
         }
+    
+    func checkSegment() {
+        let miles = (LocationService.instance.distanceInMeters / 1609)
+        let kilo = LocationService.instance.distanceInKilo
+        
+        let formattedMiles = String(format: "%.02f", miles)
+        let formattedKilo = String(format: "%.02f", kilo)
+        
+        if distanceSegment.selectedSegmentIndex == 1 {
+            
+            distanceLabel.text = "You ran \(formattedKilo) Kilometers"
+            
+        } else {
+            
+            distanceLabel.text = "You ran \(formattedMiles) Miles"
+        }
     }
+    
+    func setUpStopButton() {
+        LocationService.instance.locationManager.stopUpdatingLocation()
+        stopButton.isEnabled = false
+        stopButton.setTitleColor(.gray, for: .normal)
+        distanceLabel.isHidden = false
+        mapView.showsUserLocation = false
+    }
+}
     
 
 

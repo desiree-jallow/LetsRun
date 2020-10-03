@@ -27,7 +27,6 @@ class LocationService: NSObject, CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
-        
         if let singleLocation = locations.last?.coordinate {
             locationsArray.append(singleLocation)
         }
@@ -40,21 +39,12 @@ class LocationService: NSObject, CLLocationManagerDelegate {
             let startLocation = CLLocation(latitude: firstLat , longitude: firstLong)
             let endLocation = CLLocation(latitude: lastLat, longitude: lastLong )
            
-             
              distanceInMeters = startLocation.distance(from: endLocation)
              distanceInKilo = distanceInMeters / 1000
-            
         }
-    }
-    
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print(error.localizedDescription)
     }
-    
-    
-    
 }
