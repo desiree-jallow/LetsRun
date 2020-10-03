@@ -7,8 +7,11 @@
 
 import UIKit
 import MapKit
+import MessageUI
 
-class MapViewController: UIViewController {
+class MapViewController: UIViewController, MFMessageComposeViewControllerDelegate {
+    
+    
    
     @IBOutlet weak var mapView: MKMapView!
     
@@ -27,19 +30,7 @@ class MapViewController: UIViewController {
     }
     
     @IBAction func segmentChanged(_ sender: UISegmentedControl) {
-        let miles = (LocationService.instance.distanceInMeters / 1609)
-        let kilo = LocationService.instance.distanceInKilo
-        
-        let formattedMiles = String(format: "%.02f", miles)
-        let formattedKilo = String(format: "%.02f", kilo)
-        
-        
-        if distanceSegment.selectedSegmentIndex == 0 {
-            
-            distanceLabel.text = "Your ran \(formattedMiles) Miles"
-        } else {
-            distanceLabel.text = "You ran \(formattedKilo) Kilometers"
-        }
+        checkSegment()
     }
     
     @IBAction func endButtonPressed(_ sender: RoundButton) {
@@ -48,14 +39,68 @@ class MapViewController: UIViewController {
     
             setPosition()
             showRoute(startPosition: start, endPosition: end)
-            LocationService.instance.locationManager.stopUpdatingLocation()
-            stopButton.isEnabled = false
-            stopButton.setTitleColor(.gray, for: .normal)
-            distanceLabel.isHidden = false
-            mapView.showsUserLocation = false
+            setUpStopButton()
+            checkSegment()
             
         }
     }
+    
+    func setUpStopButton() {
+        LocationService.instance.locationManager.stopUpdatingLocation()
+        stopButton.isEnabled = false
+        stopButton.setTitleColor(.gray, for: .normal)
+        distanceLabel.isHidden = false
+        mapView.showsUserLocation = false
+    }
+    
+    func checkSegment() {
+        
+        let miles = (LocationService.instance.distanceInMeters / 1609)
+        let kilo = LocationService.instance.distanceInKilo
+        
+        let formattedMiles = String(format: "%.02f", miles)
+        let formattedKilo = String(format: "%.02f", kilo)
+        
+        if distanceSegment.selectedSegmentIndex == 1 {
+            
+            distanceLabel.text = "You ran \(formattedKilo) Kilometers"
+            
+        } else {
+            
+            distanceLabel.text = "You ran \(formattedMiles) Miles"
+        }
+    }
+    
+    func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+        controller.dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func shareButtonTapped(_ sender: UIBarButtonItem) {
+        
+        if (MFMessageComposeViewController.canSendText()) {
+            
+                let controller = MFMessageComposeViewController()
+                controller.messageComposeDelegate = self
+            
+            
+                self.present(controller, animated: true, completion: nil)
+                
+            }
+            else {
+                print("No good")
+            }
+        
+       
+        
+       
+        
+
+        
+        
+         
+    }
+    
+    
 }
 
 extension MapViewController {
@@ -86,15 +131,18 @@ extension MapViewController {
     }
     
     func checkLocationAuthStatus() {
-        if LocationService.instance.locationManager.authorizationStatus == .authorizedWhenInUse {
-            self.mapView.showsUserLocation = true
-            self.mapView.userTrackingMode = .follow
-        } else {
-            LocationService.instance.locationManager.requestWhenInUseAuthorization()
+         
+            if LocationService.instance.locationManager.authorizationStatus == .authorizedWhenInUse {
+                self.mapView.showsUserLocation = true
+                self.mapView.userTrackingMode = .follow
+            } else {
+                LocationService.instance.locationManager.requestWhenInUseAuthorization()
+                checkLocationAuthStatus()
+            }
         }
     }
     
-}
+
 
 
 extension MapViewController: MKMapViewDelegate {

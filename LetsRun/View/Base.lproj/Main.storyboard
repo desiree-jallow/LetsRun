@@ -90,7 +90,7 @@
                                     <action selector="segmentChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="wcE-nq-n3b"/>
                                 </connections>
                             </segmentedControl>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You ran 5 miles" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GYB-ey-W9W">
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GYB-ey-W9W">
                                 <rect key="frame" x="20" y="199" width="374" height="50"/>
                                 <color key="backgroundColor" red="0.080592773849999993" green="0.18949791790000001" blue="0.3140477538" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
@@ -121,6 +121,9 @@
                     <navigationItem key="navigationItem" id="LNY-SZ-Xi0">
                         <barButtonItem key="rightBarButtonItem" systemItem="action" id="QZQ-xg-1hQ">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="shareButtonTapped:" destination="BYZ-38-t0r" id="dEL-iW-hMH"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
