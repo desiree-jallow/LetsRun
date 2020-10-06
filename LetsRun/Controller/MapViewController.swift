@@ -10,8 +10,6 @@ import MapKit
 import MessageUI
 
 class MapViewController: UIViewController {
-    
-    
    
     @IBOutlet weak var mapView: MKMapView!
     
@@ -41,12 +39,12 @@ class MapViewController: UIViewController {
             showRoute(startPosition: start, endPosition: end)
             setUpStopButton()
             checkSegment()
-            
         }
     }
     
+    
     @IBAction func shareButtonTapped(_ sender: UIBarButtonItem) {
-        
+        //capture snapshot of map and send it in sms
         if (MFMessageComposeViewController.canSendText()) {
             
             let controller = MFMessageComposeViewController()
@@ -70,13 +68,40 @@ class MapViewController: UIViewController {
     }
 }
 
+//MARK: - MFMessageComposeViewControllerDelegate
 extension MapViewController: MFMessageComposeViewControllerDelegate {
+    //dismiss message controller
     func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
         controller.dismiss(animated: true, completion: nil)
     }
 }
 
+//MARK: - MKMapViewDelegate
+extension MapViewController: MKMapViewDelegate {
+    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        //render polyline
+        let directionsRenderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
+        directionsRenderer.strokeColor = #colorLiteral(red: 0.08059277385, green: 0.1894979179, blue: 0.3140477538, alpha: 1)
+        directionsRenderer.lineWidth = 5
+        directionsRenderer.alpha = 0.85
+        
+        return directionsRenderer
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        //change pin color
+        let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pin")
+        
+        annotationView.animatesDrop = true
+        annotationView.pinTintColor = #colorLiteral(red: 0.08059277385, green: 0.1894979179, blue: 0.3140477538, alpha: 1)
+        
+        return annotationView
+    }
+}
+
 extension MapViewController {
+    //get directions
     func showRoute(startPosition: CLLocationCoordinate2D, endPosition: CLLocationCoordinate2D) {
         
         let request = MKDirections.Request()
@@ -93,7 +118,7 @@ extension MapViewController {
             self.mapView.setVisibleMapRect(route.polyline.boundingMapRect, edgePadding: UIEdgeInsets(top: 200, left: 50, bottom: 50, right: 50), animated: true)
         }
     }
-    
+    //lay pin on map
     func setPosition() {
         if let coordinate = LocationService.instance.locationManager.location?.coordinate {
             let annotation = MKPointAnnotation()
@@ -102,7 +127,7 @@ extension MapViewController {
             
         }
     }
-    
+    //check location authorization
     func checkLocationAuthStatus() {
             if LocationService.instance.locationManager.authorizationStatus == .authorizedWhenInUse {
                 self.mapView.showsUserLocation = true
@@ -112,7 +137,7 @@ extension MapViewController {
                 checkLocationAuthStatus()
             }
         }
-    
+    //display distance based on segment index
     func checkSegment() {
         let miles = (LocationService.instance.distanceInMeters / 1609)
         let kilo = LocationService.instance.distanceInKilo
@@ -129,39 +154,13 @@ extension MapViewController {
             distanceLabel.text = "You ran \(formattedMiles) Miles"
         }
     }
-    
+    //show polyline
     func setUpStopButton() {
         LocationService.instance.locationManager.stopUpdatingLocation()
         stopButton.isEnabled = false
         stopButton.setTitleColor(.gray, for: .normal)
         distanceLabel.isHidden = false
         mapView.showsUserLocation = false
-    }
-}
-    
-
-
-
-extension MapViewController: MKMapViewDelegate {
-    
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        let directionsRenderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
-        directionsRenderer.strokeColor = #colorLiteral(red: 0.08059277385, green: 0.1894979179, blue: 0.3140477538, alpha: 1)
-        directionsRenderer.lineWidth = 5
-        directionsRenderer.alpha = 0.85
-        
-        return directionsRenderer
-    }
-    
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pin")
-        
-        annotationView.animatesDrop = true
-        annotationView.pinTintColor = #colorLiteral(red: 0.08059277385, green: 0.1894979179, blue: 0.3140477538, alpha: 1)
-        
-        return annotationView
-        
-        
     }
 }
 
